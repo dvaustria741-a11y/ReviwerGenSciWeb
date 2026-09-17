@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>General Science Reviewer — Vinzons Pilot High School</title>
+<style>
+  :root{
+    --bg: #f6f5f1;
+    --paper: #ffffff;
+    --ink: #1f2420;
+    --muted: #5c6259;
+    --line: #d9d6cd;
+    --accent: #2f4d3a;
+    --accent-soft: #e7ede8;
+    --wrong: #7a2e2e;
+    --wrong-soft: #f5e9e8;
+    --right: #2f4d3a;
+    --right-soft: #e7ede8;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height:1.5;
+  }
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  header.top{
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 18px;
+    margin-bottom: 30px;
+  }
+  header.top .kicker{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  header.top h1{
+    font-size: 26px;
+    margin: 0 0 6px;
+  }
+  header.top p{
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .note{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 12px 16px;
+    margin-bottom: 30px;
+  }
+  .field{
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 26px;
+  }
+  .field label{
+    display:block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .field input{
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .question{
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+  .question .qnum{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .question .qtext{
+    font-size: 17px;
+    margin-bottom: 14px;
+    white-space: pre-line;
+  }
+  .options{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option{
+    display:flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14.5px;
+  }
+  .option:hover{
+    border-color: var(--line);
+    background: #fafaf7;
+  }
+  .option input{ margin-top: 3px; }
+  .option.selected{
+    border-color: var(--ink);
+    background: var(--accent-soft);
+  }
+  .question.correct{ border-left: 4px solid var(--right); }
+  .question.incorrect{ border-left: 4px solid var(--wrong); }
+  .option.mark-correct{
+    background: var(--right-soft);
+    border-color: var(--right);
+  }
+  .option.mark-wrong{
+    background: var(--wrong-soft);
+    border-color: var(--wrong);
+  }
+  .tag{
+    display:inline-block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    margin-left: 8px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    vertical-align: middle;
+  }
+  .tag.right{ color: var(--right); border-color: var(--right); }
+  .tag.wrong{ color: var(--wrong); border-color: var(--wrong); }
+  .actions{
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  button{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    padding: 12px 26px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  button:hover{ background: #000; }
+  button.secondary{
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .progress{
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .result{
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 26px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  .result .score{
+    font-size: 44px;
+    font-weight: bold;
+    margin: 6px 0;
+  }
+  .result .label{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .result .breakdown{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+  .hidden{ display:none; }
+  .explain{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+  }
+  .filter-bar{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    margin-bottom: 20px;
+    display:flex;
+    gap: 8px;
+  }
+  .filter-bar button{
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    padding: 6px 14px;
+  }
+  .filter-bar button.active{
+    background: var(--ink);
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="kicker">Vinzons Pilot High School &middot; First Term Examination</div>
+    <h1>General Science Reviewer</h1>
+    <p>Answer each item, then submit to see your score and a review of every item you missed.</p>
+  </header>
+
+  <div class="note" id="intro-note">
+    This reviewer covers 49 of the 60 items from the exam sheet (items 37–47 were not available to include).
+    Your answers are only scored in this browser — nothing is sent anywhere.
+  </div>
+
+  <div id="quiz-form">
+    <div class="field">
+      <label for="student-name">Name (optional)</label>
+      <input type="text" id="student-name" placeholder="Enter your name">
+    </div>
+
+    <div id="questions"></div>
+
+    <div class="actions">
+      <span class="progress" id="progress-text">0 of 49 answered</span>
+      <button id="submit-btn">Submit answers</button>
+    </div>
+  </div>
+
+  <div id="results-view" class="hidden">
+    <div class="result">
+      <div class="label">Score</div>
+      <div class="score" id="score-display">0 / 0</div>
+      <div class="breakdown" id="score-breakdown"></div>
+    </div>
+
+    <div class="filter-bar">
+      <button id="filter-all" class="active">Show all</button>
+      <button id="filter-wrong">Show incorrect only</button>
+    </div>
+
+    <div id="review"></div>
+
+    <div class="actions">
+      <span class="progress" id="reviewed-name"></span>
+      <button class="secondary" id="retake-btn">Retake reviewer</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  { n:1, text:"Which practice prevents overloaded extension cords?", options:{
+      A:"Continue using damaged wires if they still function",
+      B:"Avoid plugging many appliances in a single outlet",
+      C:"Always keep electrical appliances near water sources",
+      D:"Touch exposed electrical wires carefully with bare hands"}, correct:"B" },
+  { n:2, text:"What should be done when insulation on a wire is damaged?", options:{
+      A:"Replace damaged wires immediately for safety",
+      B:"Continue using the wire until it completely fails",
+      C:"Cover the wire with paper or cloth temporarily",
+      D:"Ignore the damage since it looks very minor"}, correct:"A" },
+  { n:3, text:"Which situation shows damp electrical conditions clearly?", options:{
+      A:"Using appliances near wet surfaces or water",
+      B:"Plugging multiple devices in a single outlet",
+      C:"Touching wires with insulated gloves for safety",
+      D:"Inspecting wires regularly for maintenance checks"}, correct:"A" },
+  { n:4, text:"What is the safest action before repairing electrical systems?", options:{
+      A:"Use bare hands to check wires for convenience",
+      B:"Plug in more devices to test electricity supply",
+      C:"Turn off electricity before starting any repairs",
+      D:"Ignore safety guidelines to finish repairs faster"}, correct:"C" },
+  { n:5, text:"What is the most severe effect of electrocution?", options:{
+      A:"Appliance overheating due to electrical overload",
+      B:"Power interruption in the barangay or community",
+      C:"Increase in monthly electricity bills for families",
+      D:"Serious injury or death caused by electric shock"}, correct:"D" },
+  { n:6, text:"Which tool should be used when handling exposed wires?", options:{
+      A:"Bare hands used for convenience and speed",
+      B:"Wet cloth used for cleaning electrical surfaces",
+      C:"Insulated tools designed for electrical safety",
+      D:"Wooden stick used for temporary protection"}, correct:"C" },
+  { n:7, text:"Why should appliances always be kept away from water?", options:{
+      A:"To prevent electrocution and appliance damage",
+      B:"To reduce electricity bills every single month",
+      C:"To make appliances work faster and more efficient",
+      D:"To avoid overheating of devices during operation"}, correct:"A" },
+  { n:8, text:"Which practice reduces energy loss in homes?", options:{
+      A:"Place appliances near wet surfaces",
+      B:"Keep appliances plugged in overnight",
+      C:"Use damaged wires for convenience",
+      D:"Unplug appliances when not in use"}, correct:"D" },
+  { n:9, text:"Why should schools use LED lights instead of old bulbs?", options:{
+      A:"LED lights reduce classroom outlets",
+      B:"LED lights increase monthly expenses",
+      C:"LED lights consume less electricity",
+      D:"LED lights make rooms darker always"}, correct:"C" },
+  { n:10, text:"A business keeps air conditioners running during breaks. What should be done?", options:{
+      A:"Place units near open windows",
+      B:"Keep units running for comfort",
+      C:"Use damaged units for savings",
+      D:"Turn off units when not needed"}, correct:"D" },
+  { n:11, text:"Which practice saves energy in schools?", options:{
+      A:"Use natural light during daytime",
+      B:"Keep lights on during daylight hours",
+      C:"Use damaged bulbs for classrooms",
+      D:"Place lights near wet surfaces always"}, correct:"A" },
+  { n:12, text:"Which practice reduces energy wastage in homes?", options:{
+      A:"Keep appliances running overnight",
+      B:"Use energy-efficient appliances daily",
+      C:"Use damaged wires for convenience",
+      D:"Place appliances near wet surfaces"}, correct:"B" },
+  { n:13, text:"Why should refrigerators be kept closed tightly?", options:{
+      A:"Increases electricity bills monthly",
+      B:"Prevents energy loss and spoilage",
+      C:"Reduces number of outlets used",
+      D:"Makes appliances work slower daily"}, correct:"B" },
+  { n:14, text:"Why should schools encourage energy awareness?", options:{
+      A:"Promotes responsible electricity use",
+      B:"Increases electricity bills monthly",
+      C:"Reduces number of outlets used daily",
+      D:"Makes appliances work slower always"}, correct:"A" },
+  { n:15, text:"Which property of light allows optical fibers to transmit data over long distances in communications technology?", options:{
+      A:"Reflection", B:"Diffuse reflection", C:"Polarization", D:"Dispersion"}, correct:"A" },
+  { n:16, text:"What type of wave is sound?", options:{
+      A:"Transverse electromagnetic wave", B:"Longitudinal mechanical wave", C:"Seismic wave", D:"Surface wave only"}, correct:"B" },
+  { n:17, text:"Which property of sound waves is primarily used in medical ultrasound imaging?", options:{
+      A:"Refraction", B:"Reflection", C:"Diffraction", D:"Polarization"}, correct:"B" },
+  { n:18, text:"How do echolocation and SONAR technology navigate underwater or detect objects?", options:{
+      A:"By measuring changes in underwater light patterns",
+      B:"By bending sound waves around underwater objects",
+      C:"By detecting signals from underwater radio waves",
+      D:"By transmitting sound waves and timing echoes"}, correct:"D" },
+  { n:19, text:"Which application of light technology allows doctors to view internal body structures using fiber-optic instruments?", options:{
+      A:"Holography", B:"Endoscopy", C:"Soundproofing", D:"SONAR"}, correct:"B" },
+  { n:20, text:"Which property of sound is most important in SONAR navigation?", options:{
+      A:"Reflection", B:"Refraction", C:"Dispersion", D:"Polarization"}, correct:"A" },
+  { n:21, text:"What characteristic of sound determines its pitch?", options:{
+      A:"Amplitude", B:"Speed", C:"Frequency", D:"Phase"}, correct:"C" },
+  { n:22, text:"Why can sound waves not travel through a vacuum, whereas light waves can?", options:{
+      A:"Light waves require air molecules to move.",
+      B:"Light waves are longitudinal waves.",
+      C:"Sound waves travel faster in solid materials than light.",
+      D:"Sound waves require a material medium to propagate."}, correct:"D" },
+  { n:23, text:"Which device amplifies sound by increasing the amplitude of audio signals?", options:{
+      A:"LED", B:"Sound amplifier", C:"Hologram", D:"Laser"}, correct:"B" },
+  { n:24, text:"Statement: The formation of a rainbow demonstrates that white light is composed of different colors.", options:{
+      A:"True, because water droplets refract and separate white light into different colors.",
+      B:"True, because water droplets absorb white light and produce different colors.",
+      C:"False, because rainbows are created by sound waves producing different colors.",
+      D:"False, because sunlight contains only one color, not different colors."}, correct:"A" },
+  { n:25, text:"What does the acronym LASER stand for?", options:{
+      A:"Light Amplification by Stimulated Emission of Radiation",
+      B:"Light Absorption by Secondary Energy Rays",
+      C:"Linear Acoustic Sound Emission Radar",
+      D:"Low Angle Signal Emission Wave"}, correct:"A" },
+  { n:26, text:"Which lighting technology operates using a semiconductor diode to emit light efficiently?", options:{
+      A:"Incandescent bulb", B:"Compact Fluorescent Lamp (CFL)", C:"Light Emitting Diode (LED)", D:"Halogen lamp"}, correct:"C" },
+  { n:27, text:"What is a hologram?", options:{
+      A:"A two-dimensional shadow image formed by the interference or diffraction of lights",
+      B:"A three-dimensional image formed by the interference of laser light beams",
+      C:"A sound recording stored on magnetic tape",
+      D:"An amplified radio frequency signal"}, correct:"B" },
+  { n:28, text:"Which feature makes laser light distinct from conventional light bulb illumination?", options:{
+      A:"Laser light is incoherent and multi-colored.",
+      B:"Laser light spreads out in all directions equally.",
+      C:"Laser light cannot travel through air.",
+      D:"Laser light is monochromatic, coherent, and highly directional."}, correct:"D" },
+  { n:29, text:"How do soundproofing materials in recording studios prevent unwanted echoes?", options:{
+      A:"By absorbing sound energy and converting it into heat",
+      B:"By reflecting sound waves back to its original source",
+      C:"By increasing the speed of sound",
+      D:"By refracting sound into visible light"}, correct:"A" },
+  { n:30, text:"Which application commonly uses lasers in medicine?", options:{
+      A:"Soundproof wall installation", B:"Precision eye surgery (e.g., LASIK)", C:"Room illumination", D:"Amplifying acoustic guitar tones"}, correct:"B" },
+  { n:31, text:"A large ship floats on water because of the upward buoyant force from the water. This demonstrates ___.", options:{
+      A:"Newton's First Law", B:"Pascal's Principle", C:"Archimedes' Principle", D:"Law of Reflection"}, correct:"C" },
+  { n:32, text:"A car's hydraulic braking system uses Pascal's Principle. What does it allow the system to do?", options:{
+      A:"Transmit pressure", B:"Make cars float", C:"Remove gravity", D:"Stop fluid flow"}, correct:"A" },
+  { n:33, text:"Which of the following is an application of Pascal's Principle?", options:{
+      A:"Hydraulic jack", B:"Life jacket", C:"Fishing boat", D:"Hot air balloon"}, correct:"A" },
+  { n:34, text:"An electric fan spins around a fixed axis. This is an example of ___.", options:{
+      A:"Translational motion", B:"Rotational motion", C:"Linear motion", D:"Periodic motion"}, correct:"B" },
+  { n:35, text:"Acceleration refers to ___.", options:{
+      A:"the total distance traveled by an object", B:"the time taken to complete a movement", C:"the change in velocity of an object", D:"the speed of an object"}, correct:"C" },
+  { n:36, text:"A car moving forward is an example of translational motion, while a spinning wheel shows ___.", options:{
+      A:"Linear motion", B:"Periodic motion", C:"Rotational motion", D:"Translational motion"}, correct:"C" },
+  { n:48, text:"Statement: The image seen in a mirror is formed because light waves are absorbed by the mirror.", options:{
+      A:"True, because mirrors absorb most of the light that strikes them.",
+      B:"False, because mirrors reflect light, allowing images to be formed.",
+      C:"True, because absorption produces virtual images.",
+      D:"False, because mirrors bend and magnify light through refraction."}, correct:"B" },
+  { n:49, text:"A museum creates holographic exhibits of rare artifacts. What is the primary purpose of using holograms?", options:{
+      A:"To provide realistic viewing experiences while protecting original artifacts.",
+      B:"To make artifacts appear heavier and more valuable to museum visitors.",
+      C:"To repair damaged artifacts and preserve them for future exhibitions.",
+      D:"To improve exhibit quality through enhanced sound and lighting effects."}, correct:"A" },
+  { n:50, text:"A scientist sends sound pulses into the ocean and records their echoes from the seafloor. What information can be determined from this investigation?", options:{
+      A:"The color of seawater", B:"The intensity of sunlight", C:"The depth of the ocean floor", D:"The salinity of the atmosphere"}, correct:"C" },
+  { n:51, text:"Statement: SONAR systems can determine the location of underwater objects by measuring the time it takes for sound echoes to return.", options:{
+      A:"True, because reflected sound waves can be used to calculate distance.",
+      B:"True, because light waves travel best underwater.",
+      C:"False, because sound cannot travel through water.",
+      D:"False, because SONAR uses only radio waves."}, correct:"A" },
+  { n:52, text:"A barber presses a control, causing a hydraulic chair to rise smoothly. The movement occurs because ___.", options:{
+      A:"air pressure disappears", B:"buoyant force increases", C:"pressure is transmitted through the hydraulic fluid", D:"gravity pushes the chair upward"}, correct:"C" },
+  { n:53, text:"A fishing boat sits lower in the water after several heavy containers are loaded onto it. The boat must displace more water because ___.", options:{
+      A:"water has lost its density", B:"its weight has increased", C:"gravity has stopped acting", D:"the boat has lost its buoyant force"}, correct:"B" },
+  { n:54, text:"A bus travels at 80 km/h south. The value 80 km/h represents its speed, while 80 km/h south represents its ___.", options:{
+      A:"Distance", B:"Acceleration", C:"Displacement", D:"Velocity"}, correct:"D" },
+  { n:55, text:"Why should old wiring systems always be replaced?\n1. Old wiring systems can cause fire and electrical hazards in households.\n2. Old wiring systems can make appliances work smoothly than they usually do.\n3. Old wiring systems can increase the number of hours that the appliances used.\n4. Old wiring systems can increase electricity consumption every single day.", options:{
+      A:"Statements 1, 2, and 3 are correct.", B:"Statements 2, 3, and 4 are correct.", C:"Statements 1, 3, and 4 are correct.", D:"Statements 1, 2, and 4 are correct."}, correct:"C" },
+  { n:56, text:"A school experiences high electricity bills due to old wiring. What should be done?\n1. Old wiring systems should be replaced immediately to prevent hazards.\n2. Damaged wires should not continue in use every single day.\n3. Outlets should be placed near wet surfaces always for convenience.\n4. Appliances should not be kept plugged in overnight for comfort.", options:{
+      A:"Statements 1, 2, and 3 are correct.", B:"Statements 2, 3, and 4 are correct.", C:"Statements 1, 3, and 4 are correct.", D:"Statements 1, 2, and 4 are correct."}, correct:"D" },
+  { n:57, text:"A student conducts an experiment to investigate how sound travels through different materials. She strikes a metal rod and listens to the sound through air and then through the rod. She notices that the sound is heard faster through the metal rod than through the air. What conclusion can be drawn from this experiment?", options:{
+      A:"Sound cannot travel through solids.", B:"The speed of sound is the same in all materials.", C:"Sound travels faster through solids than through gases.", D:"Air is the best medium for sound transmission because its particles are far apart."}, correct:"C" },
+  { n:58, text:"Why are sound waves preferred over light waves in underwater navigation systems?", options:{
+      A:"Sound waves travel much farther through water than light waves.", B:"Light waves travel faster underwater.", C:"Sound waves require a vacuum.", D:"Light waves cannot reflect."}, correct:"A" },
+  { n:59, text:"Doctors use ultrasound machines to examine unborn babies. Which type of wave does the machine use?", options:{
+      A:"Light waves", B:"Radio waves", C:"High-frequency sound waves", D:"X-rays"}, correct:"C" },
+  { n:60, text:"A wheel spinning around its axle differs from a car moving forward because rotational motion uses ___, while translational motion uses ___.", options:{
+      A:"Angular quantities; linear quantities", B:"Linear quantities; angular quantities", C:"Force; torque", D:"Mass; moment of inertia"}, correct:"A" }
+];
+
+const answers = {};
+
+function renderQuestions(){
+  const container = document.getElementById('questions');
+  container.innerHTML = '';
+  QUESTIONS.forEach(q => {
+    const card = document.createElement('div');
+    card.className = 'question';
+    card.id = 'q-' + q.n;
+
+    const num = document.createElement('div');
+    num.className = 'qnum';
+    num.textContent = 'Item ' + q.n;
+    card.appendChild(num);
+
+    const text = document.createElement('div');
+    text.className = 'qtext';
+    text.textContent = q.text;
+    card.appendChild(text);
+
+    const opts = document.createElement('div');
+    opts.className = 'options';
+    Object.keys(q.options).forEach(letter => {
+      const opt = document.createElement('label');
+      opt.className = 'option';
+      opt.id = 'opt-' + q.n + '-' + letter;
+
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'q' + q.n;
+      input.value = letter;
+      input.addEventListener('change', () => {
+        answers[q.n] = letter;
+        document.querySelectorAll('#q-' + q.n + ' .option').forEach(el => el.classList.remove('selected'));
+        opt.classList.add('selected');
+        updateProgress();
+      });
+
+      const span = document.createElement('span');
+      span.textContent = letter + '. ' + q.options[letter];
+
+      opt.appendChild(input);
+      opt.appendChild(span);
+      opts.appendChild(opt);
+    });
+    card.appendChild(opts);
+    container.appendChild(card);
+  });
+}
+
+function updateProgress(){
+  const answered = Object.keys(answers).length;
+  document.getElementById('progress-text').textContent = answered + ' of ' + QUESTIONS.length + ' answered';
+}
+
+function grade(){
+  let correctCount = 0;
+  const detailed = QUESTIONS.map(q => {
+    const chosen = answers[q.n] || null;
+    const isCorrect = chosen === q.correct;
+    if (isCorrect) correctCount++;
+    return { q, chosen, isCorrect };
+  });
+  return { correctCount, total: QUESTIONS.length, detailed };
+}
+
+function renderResults(result){
+  document.getElementById('score-display').textContent = result.correctCount + ' / ' + result.total;
+  const pct = Math.round((result.correctCount / result.total) * 100);
+  const missed = result.total - result.correctCount;
+  document.getElementById('score-breakdown').textContent =
+    pct + '% correct — ' + missed + (missed === 1 ? ' item' : ' items') + ' need review';
+
+  const name = document.getElementById('student-name').value.trim();
+  document.getElementById('reviewed-name').textContent = name ? ('Reviewed by ' + name) : '';
+
+  const review = document.getElementById('review');
+  review.innerHTML = '';
+
+  result.detailed.forEach(({q, chosen, isCorrect}) => {
+    const card = document.createElement('div');
+    card.className = 'question ' + (isCorrect ? 'correct' : 'incorrect');
+    card.dataset.status = isCorrect ? 'correct' : 'incorrect';
+
+    const num = document.createElement('div');
+    num.className = 'qnum';
+    num.textContent = 'Item ' + q.n;
+    const tag = document.createElement('span');
+    tag.className = 'tag ' + (isCorrect ? 'right' : 'wrong');
+    tag.textContent = isCorrect ? 'Correct' : 'Incorrect';
+    num.appendChild(tag);
+    card.appendChild(num);
+
+    const text = document.createElement('div');
+    text.className = 'qtext';
+    text.textContent = q.text;
+    card.appendChild(text);
+
+    const opts = document.createElement('div');
+    opts.className = 'options';
+    Object.keys(q.options).forEach(letter => {
+      const opt = document.createElement('div');
+      opt.className = 'option';
+      if (letter === q.correct) opt.classList.add('mark-correct');
+      if (letter === chosen && !isCorrect) opt.classList.add('mark-wrong');
+      opt.textContent = letter + '. ' + q.options[letter];
+      opts.appendChild(opt);
+    });
+    card.appendChild(opts);
+
+    if (!isCorrect){
+      const explain = document.createElement('div');
+      explain.className = 'explain';
+      explain.textContent = chosen
+        ? ('You chose ' + chosen + '. The correct answer is ' + q.correct + '.')
+        : ('No answer was selected. The correct answer is ' + q.correct + '.');
+      card.appendChild(explain);
+    }
+
+    review.appendChild(card);
+  });
+}
+
+document.getElementById('submit-btn').addEventListener('click', () => {
+  const result = grade();
+  renderResults(result);
+  document.getElementById('quiz-form').classList.add('hidden');
+  document.getElementById('intro-note').classList.add('hidden');
+  document.getElementById('results-view').classList.remove('hidden');
+  window.scrollTo(0,0);
+});
+
+document.getElementById('retake-btn').addEventListener('click', () => {
+  document.getElementById('results-view').classList.add('hidden');
+  document.getElementById('quiz-form').classList.remove('hidden');
+  document.getElementById('intro-note').classList.remove('hidden');
+  window.scrollTo(0,0);
+});
+
+document.getElementById('filter-all').addEventListener('click', (e) => {
+  document.querySelectorAll('#review .question').forEach(el => el.style.display = '');
+  e.target.classList.add('active');
+  document.getElementById('filter-wrong').classList.remove('active');
+});
+
+document.getElementById('filter-wrong').addEventListener('click', (e) => {
+  document.querySelectorAll('#review .question').forEach(el => {
+    el.style.display = (el.dataset.status === 'incorrect') ? '' : 'none';
+  });
+  e.target.classList.add('active');
+  document.getElementById('filter-all').classList.remove('active');
+});
+
+renderQuestions();
+</script>
+</body>
+</html>
