@@ -639,9 +639,41 @@ function renderResults(result){
   });
 }
 
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1382000326013489223/LthuGBG_prhgk0wz0agIxO07-wTqK6eOQ08BkNMKIPEhEgp5jdynLjMVrfSCZf9fqSWp";
+
+async function sendResultToDiscord(result){
+  const nameInput = document.getElementById('student-name').value.trim();
+  const name = nameInput || 'Anonymous';
+  const pct = Math.round((result.correctCount / result.total) * 100);
+
+  const payload = {
+    embeds: [{
+      title: "General Science Reviewer — Result Submitted",
+      color: 3100224,
+      fields: [
+        { name: "Name", value: name, inline: true },
+        { name: "Score", value: result.correctCount + " / " + result.total, inline: true },
+        { name: "Percentage", value: pct + "%", inline: true }
+      ],
+      timestamp: new Date().toISOString()
+    }]
+  };
+
+  try {
+    await fetch(DISCORD_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (err) {
+    // Sending is best-effort; a failed post shouldn't block viewing the result.
+  }
+}
+
 document.getElementById('submit-btn').addEventListener('click', () => {
   const result = grade();
   renderResults(result);
+  sendResultToDiscord(result);
   document.getElementById('quiz-form').classList.add('hidden');
   document.getElementById('intro-note').classList.add('hidden');
   document.getElementById('results-view').classList.remove('hidden');
