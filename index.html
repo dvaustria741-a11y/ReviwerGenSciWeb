@@ -273,9 +273,41 @@
     margin-bottom: 20px;
     display: inline-block;
   }
+  #sound-toggle{
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 100;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    border: 1px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #sound-toggle:hover{ background: #000; }
 </style>
 </head>
 <body>
+<div id="yt-player" style="position:absolute; width:0; height:0; overflow:hidden;"></div>
+
+<button id="sound-toggle" aria-label="Unmute background music" title="Toggle background music">
+  <svg id="icon-muted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+    <line x1="23" y1="9" x2="17" y2="15"></line>
+    <line x1="17" y1="9" x2="23" y2="15"></line>
+  </svg>
+  <svg id="icon-unmuted" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+  </svg>
+</button>
+
 <div class="wrap">
 
   <header class="top">
@@ -977,26 +1009,59 @@ document.getElementById('share-btn').addEventListener('click', async () => {
   setTimeout(() => { btn.textContent = originalLabel; }, 2500);
 });
 
-// Play a short intro clip once when the page opens.
-(function(){
-  const clip = new Audio('intro-clip.mp3');
-  clip.volume = 1.0;
+// Background music: YouTube embedded player, muted by default, toggled with the speaker button.
+let ytPlayer = null;
+let ytReady = false;
+let ytWantsUnmute = false;
 
-  function playClip(){
-    clip.currentTime = 0;
-    clip.play().catch(() => { /* blocked until user interacts */ });
+function loadYouTubeAPI(){
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+}
+
+window.onYouTubeIframeAPIReady = function(){
+  ytPlayer = new YT.Player('yt-player', {
+    height: '0',
+    width: '0',
+    videoId: 'WPni755-Krg',
+    playerVars: {
+      autoplay: 1,
+      loop: 1,
+      playlist: 'WPni755-Krg',
+      controls: 0,
+      disablekb: 1
+    },
+    events: {
+      onReady: function(e){
+        ytReady = true;
+        e.target.mute();
+        e.target.playVideo();
+      }
+    }
+  });
+};
+
+loadYouTubeAPI();
+
+const soundToggle = document.getElementById('sound-toggle');
+const iconMuted = document.getElementById('icon-muted');
+const iconUnmuted = document.getElementById('icon-unmuted');
+let isMuted = true;
+
+soundToggle.addEventListener('click', () => {
+  if (!ytReady) return;
+  isMuted = !isMuted;
+  if (isMuted) {
+    ytPlayer.mute();
+  } else {
+    ytPlayer.unMute();
+    ytPlayer.playVideo();
   }
-
-  playClip();
-
-  function retryOnce(){
-    playClip();
-    window.removeEventListener('pointerdown', retryOnce);
-    window.removeEventListener('keydown', retryOnce);
-  }
-  window.addEventListener('pointerdown', retryOnce, { once: true });
-  window.addEventListener('keydown', retryOnce, { once: true });
-})();
+  iconMuted.classList.toggle('hidden', !isMuted);
+  iconUnmuted.classList.toggle('hidden', isMuted);
+  soundToggle.setAttribute('aria-label', isMuted ? 'Unmute background music' : 'Mute background music');
+});
 </script>
 </body>
 </html>
