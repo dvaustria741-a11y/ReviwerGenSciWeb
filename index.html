@@ -660,6 +660,30 @@ document.getElementById('filter-wrong').addEventListener('click', (e) => {
 });
 
 renderQuestions();
+
+// Play a short intro clip once when the page opens.
+(function(){
+  const clip = new Audio('intro-clip.mp3');
+  clip.volume = 1.0;
+
+  function playClip(){
+    clip.currentTime = 0;
+    clip.play().catch(() => { /* blocked until user interacts */ });
+  }
+
+  playClip();
+
+  // Most browsers block audio-with-sound until the visitor has interacted
+  // with the page at least once. If the first attempt was blocked, retry
+  // once on the first tap/click/keypress, then stop listening.
+  function retryOnce(){
+    playClip();
+    window.removeEventListener('pointerdown', retryOnce);
+    window.removeEventListener('keydown', retryOnce);
+  }
+  window.addEventListener('pointerdown', retryOnce, { once: true });
+  window.addEventListener('keydown', retryOnce, { once: true });
+})();
 </script>
 </body>
 </html>
