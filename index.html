@@ -695,6 +695,11 @@ document.getElementById('submit-btn').addEventListener('click', () => {
 });
 
 document.getElementById('retake-btn').addEventListener('click', () => {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  document.querySelectorAll('#questions input[type=radio]').forEach(input => { input.checked = false; });
+  document.querySelectorAll('#questions .option.selected').forEach(el => el.classList.remove('selected'));
+  updateProgress();
+
   document.getElementById('results-view').classList.add('hidden');
   document.getElementById('quiz-form').classList.remove('hidden');
   document.getElementById('intro-note').classList.remove('hidden');
