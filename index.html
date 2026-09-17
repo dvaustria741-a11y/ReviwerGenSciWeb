@@ -1044,6 +1044,27 @@ window.onYouTubeIframeAPIReady = function(){
 
 loadYouTubeAPI();
 
+// Short intro clip: plays once when the page opens, alongside the YouTube toggle above.
+(function(){
+  const clip = new Audio('intro-clip.mp3');
+  clip.volume = 1.0;
+
+  function playClip(){
+    clip.currentTime = 0;
+    clip.play().catch(() => { /* blocked until user interacts */ });
+  }
+
+  playClip();
+
+  function retryOnce(){
+    playClip();
+    window.removeEventListener('pointerdown', retryOnce);
+    window.removeEventListener('keydown', retryOnce);
+  }
+  window.addEventListener('pointerdown', retryOnce, { once: true });
+  window.addEventListener('keydown', retryOnce, { once: true });
+})();
+
 const soundToggle = document.getElementById('sound-toggle');
 const iconMuted = document.getElementById('icon-muted');
 const iconUnmuted = document.getElementById('icon-unmuted');
