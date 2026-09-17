@@ -218,6 +218,12 @@
     display:flex;
     gap: 8px;
   }
+  .filter-bar #share-btn{
+    margin-left: auto;
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
   .filter-bar button{
     background: var(--paper);
     color: var(--ink);
@@ -268,6 +274,7 @@
     <div class="filter-bar">
       <button id="filter-all" class="active">Show all</button>
       <button id="filter-wrong">Show incorrect only</button>
+      <button id="share-btn">Share result</button>
     </div>
 
     <div id="review"></div>
@@ -572,7 +579,10 @@ function grade(){
   return { correctCount, total: QUESTIONS.length, detailed };
 }
 
+let lastResult = null;
+
 function renderResults(result){
+  lastResult = result;
   document.getElementById('score-display').textContent = result.correctCount + ' / ' + result.total;
   const pct = Math.round((result.correctCount / result.total) * 100);
   const missed = result.total - result.correctCount;
@@ -657,6 +667,36 @@ document.getElementById('filter-wrong').addEventListener('click', (e) => {
   });
   e.target.classList.add('active');
   document.getElementById('filter-all').classList.remove('active');
+});
+
+document.getElementById('share-btn').addEventListener('click', async () => {
+  if (!lastResult) return;
+  const name = document.getElementById('student-name').value.trim();
+  const pct = Math.round((lastResult.correctCount / lastResult.total) * 100);
+  const shareText = (name ? name + ' scored ' : 'I scored ') +
+    lastResult.correctCount + '/' + lastResult.total +
+    ' (' + pct + '%) on the General Science Reviewer.\n' +
+    window.location.href;
+
+  const btn = document.getElementById('share-btn');
+  const originalLabel = btn.textContent;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ text: shareText, url: window.location.href });
+    } catch (err) {
+      // user cancelled the share sheet — no action needed
+    }
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(shareText);
+    btn.textContent = 'Copied — paste it in Messenger';
+  } catch (err) {
+    btn.textContent = 'Copy failed — copy manually';
+  }
+  setTimeout(() => { btn.textContent = originalLabel; }, 2500);
 });
 
 renderQuestions();
