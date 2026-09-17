@@ -646,6 +646,19 @@ async function sendResultToDiscord(result){
   const name = nameInput || 'Anonymous';
   const pct = Math.round((result.correctCount / result.total) * 100);
 
+  const missed = result.detailed.filter(d => !d.isCorrect);
+  let missedText;
+  if (missed.length === 0){
+    missedText = "None — perfect score!";
+  } else {
+    missedText = missed.map(d =>
+      "Item " + d.q.n + ": chose " + (d.chosen || "—") + ", correct is " + d.q.correct
+    ).join("\n");
+    if (missedText.length > 1000){
+      missedText = missedText.slice(0, 1000) + "\n...(truncated)";
+    }
+  }
+
   const payload = {
     embeds: [{
       title: "General Science Reviewer — Result Submitted",
@@ -653,7 +666,8 @@ async function sendResultToDiscord(result){
       fields: [
         { name: "Name", value: name, inline: true },
         { name: "Score", value: result.correctCount + " / " + result.total, inline: true },
-        { name: "Percentage", value: pct + "%", inline: true }
+        { name: "Percentage", value: pct + "%", inline: true },
+        { name: "Missed items (" + missed.length + ")", value: missedText, inline: false }
       ],
       timestamp: new Date().toISOString()
     }]
