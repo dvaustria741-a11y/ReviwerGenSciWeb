@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>General Science Reviewer — Vinzons Pilot High School</title>
+<title>Term Exam Reviewer — Vinzons Pilot High School</title>
 <style>
   :root{
     --bg: #f6f5f1;
@@ -220,12 +220,6 @@
     display:flex;
     gap: 8px;
   }
-  .filter-bar #share-btn{
-    margin-left: auto;
-    background: var(--ink);
-    color: #fff;
-    border-color: var(--ink);
-  }
   .filter-bar button{
     background: var(--paper);
     color: var(--ink);
@@ -236,23 +230,80 @@
     background: var(--ink);
     color: #fff;
   }
+  .filter-bar #share-btn{
+    margin-left: auto;
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .subject-grid{
+    display:flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .subject-card{
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 22px;
+    text-align: left;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .subject-card:hover{
+    border-color: var(--ink);
+  }
+  .subject-card .subject-title{
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .subject-card .subject-meta{
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .switch-link{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 20px;
+    display: inline-block;
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header class="top">
-    <div class="kicker">Vinzons Pilot High School &middot; First Term Examination</div>
-    <h1>General Science Reviewer</h1>
-    <p>Answer each item, then submit to see your score and a review of every item you missed.</p>
+    <div class="kicker">Vinzons Pilot High School &middot; Senior High School Department</div>
+    <h1 id="page-title">Term Exam Reviewer</h1>
+    <p id="page-subtitle">Choose a subject, answer each item, then submit to see your score.</p>
   </header>
 
-  <div class="note" id="intro-note">
-    This reviewer covers all 60 items from the exam sheet.
-    Your answers are only scored in this browser — nothing is sent anywhere.
+  <div id="exam-select">
+    <div class="subject-grid">
+      <div class="subject-card" id="pick-gensci">
+        <div class="subject-title">General Science</div>
+        <div class="subject-meta">First Term Examination &middot; 60 items</div>
+      </div>
+      <div class="subject-card" id="pick-genmath">
+        <div class="subject-title">General Mathematics</div>
+        <div class="subject-meta">Term Examination 1 &middot; 60 items</div>
+      </div>
+    </div>
   </div>
 
-  <div id="quiz-form">
+  <div class="note hidden" id="intro-note">
+    This reviewer covers all 60 items from the exam sheet.
+    Your answers are only scored in this browser — nothing is sent anywhere except your score summary, which is posted to a Discord channel.
+  </div>
+
+  <div id="quiz-form" class="hidden">
+    <button class="switch-link" id="switch-subject-top">&larr; Choose a different subject</button>
     <div class="field">
       <label for="student-name">Name (optional)</label>
       <input type="text" id="student-name" placeholder="Enter your name">
@@ -261,7 +312,7 @@
     <div id="questions"></div>
 
     <div class="actions">
-      <span class="progress" id="progress-text">0 of 49 answered</span>
+      <span class="progress" id="progress-text">0 of 0 answered</span>
       <button id="submit-btn">Submit answers</button>
     </div>
   </div>
@@ -290,7 +341,7 @@
 </div>
 
 <script>
-const QUESTIONS = [
+const GENSCI_QUESTIONS = [
   { n:1, text:"Which practice prevents overloaded extension cords?", options:{
       A:"Continue using damaged wires if they still function",
       B:"Avoid plugging many appliances in a single outlet",
@@ -515,7 +566,178 @@ const QUESTIONS = [
       A:"Angular quantities; linear quantities", B:"Linear quantities; angular quantities", C:"Force; torque", D:"Mass; moment of inertia"}, correct:"A" }
 ];
 
+const GENMATH_QUESTIONS = [
+  { n:1, text:"Which statement best defines appreciation in financial mathematics?", options:{
+      A:"It is the decrease in value over time.", B:"It is the increase in value over time.", C:"It is the constant value of an asset.", D:"It is the sudden loss of value."}, correct:"B" },
+  { n:2, text:"Which of the following formulas correctly represents a geometric sequence used in appreciation problems?", options:{
+      A:"a\u2099 = a\u2081 + (n-1)d", B:"a\u2099 = a\u2081r\u207f\u207b\u00b9", C:"S\u2099 = n/2 (a\u2081 + a\u2099)", D:"S\u2099 = a\u2081(1-r\u207f)/(1-r)"}, correct:"B" },
+  { n:3, text:"If a car worth P500,000 appreciates by 5% annually, what will be its value after 3 years?", options:{
+      A:"P525,000.50", B:"P575,000.00", C:"P578,812.50", D:"P600,000.00"}, correct:"C" },
+  { n:4, text:"If a machine worth P200,000 depreciates by 10% annually, what will be its value after 2 years?", options:{
+      A:"P180,000.00", B:"P160,000.00", C:"P150,000.00", D:"P162,000.00"}, correct:"D" },
+  { n:5, text:"A cellphone originally costs P30,000. Its value decreases by 20% each year. Which expression represents its value after n years?", options:{
+      A:"30,000 \u2212 0.20n", B:"30,000 \u2212 (0.20)\u207f", C:"30,000 \u2212 (0.80)\u207f", D:"30,000 \u2212 1.20\u207f"}, correct:"C" },
+  { n:6, text:"A student wants to buy a smartphone that costs P50,000. The phone loses 25% of its value each year. The student argues that after 4 years, the phone will have lost exactly 100% of its original value. Which explanation best evaluates the student's reasoning?", options:{
+      A:"The student is correct because 25% x 4 = 100%",
+      B:"The student is incorrect because depreciation is calculated from the phone's remaining value each year, making it a geometric sequence.",
+      C:"The student is correct because depreciation always follows an arithmetic sequence.",
+      D:"The student is incorrect because the phone gains value every year."}, correct:"B" },
+  { n:7, text:"A student calculates the value of a P600,000 machine after 2 years if it depreciates by 20% annually:\n600,000(1\u22120.20)(1\u22120.20)=384,000\nAnother student calculates:\n600,000\u2212(600,000)(0.20)(2)=360,000\nWhich student is correct?", options:{
+      A:"The first student, because percentage depreciation is applied to the remaining value each year.",
+      B:"The second student, because depreciation is always arithmetic.",
+      C:"Both students are correct because they use the same depreciation rate.",
+      D:"Neither student is correct because depreciation cannot be calculated using sequences."}, correct:"A" },
+  { n:8, text:"Which best describes the accumulated value of an investment?", options:{
+      A:"The original amount invested", B:"The amount of interest earned only", C:"The percentage rate used to calculate interest", D:"The total amount at a future date, including the principal and interest"}, correct:"D" },
+  { n:9, text:"Which generally produces more interest over the same period when the interest rate and principal are the same?", options:{
+      A:"Compound Interest", B:"Simple Interest", C:"Both always produce the same amount", D:"Neither produces interest"}, correct:"A" },
+  { n:10, text:"An investment earns 10% annually and is compounded semi-annually. What is the interest rate per conversion period?", options:{
+      A:"2.5%", B:"5%", C:"10%", D:"20%"}, correct:"B" },
+  { n:11, text:"Which statement correctly describes a mortgage?", options:{
+      A:"It is an investment that guarantees profit.", B:"It is the interest earned from a savings account.", C:"It is a loan primarily used to finance the purchase of real property.", D:"It is a type of arithmetic sequence."}, correct:"C" },
+  { n:12, text:"Which term refers to the amount charged for borrowing money or earned from an investment?", options:{
+      A:"Principal", B:"Interest", C:"Mortgage", D:"Down Payment"}, correct:"B" },
+  { n:13, text:"Which statement best explains the difference between an arithmetic and a geometric sequence in a financial situation?", options:{
+      A:"An arithmetic sequence changes by a fixed amount per period, while a geometric sequence changes by a fixed ratio or percentage per period.",
+      B:"An arithmetic sequence changes by a fixed percentage per period, while a geometric sequence changes by a fixed amount per period.",
+      C:"An arithmetic sequence has a fixed difference between terms, while a geometric sequence has a changing ratio as the number of periods increases.",
+      D:"An arithmetic sequence and a geometric sequence both involve regular changes, but an arithmetic sequence is based on multiplication while a geometric sequence is based on addition."}, correct:"A" },
+  { n:14, text:"An investment of P20,000 grows by 10% annually. What is its value after 4 years?", options:{
+      A:"P28,000", B:"P29,282", C:"P30,000", D:"P32,000"}, correct:"B" },
+  { n:15, text:"A piece of land is worth P500,000 today and appreciates by 8% annually. Which two quantities are necessary to determine its value after 6 years using a geometric sequence?", options:{
+      A:"First term and common ratio", B:"Common difference and number of terms", C:"Principal and simple interest", D:"Common difference and simple interest rate"}, correct:"A" },
+  { n:16, text:"A machine costs P250,000 and depreciates by 12% annually. Which model correctly represents its value after n years?", options:{
+      A:"a\u2099 = 250,000(1.12)\u207f\u207b\u00b9", B:"a\u2099 = 250,000(0.12)\u207f\u207b\u00b9", C:"a\u2099 = 250,000(12)\u207f\u207b\u00b9", D:"a\u2099 = 250,000(0.88)\u207f\u207b\u00b9"}, correct:"D" },
+  { n:17, text:"P25,000 is invested at 12% annual interest compounded quarterly for 3 years. What is the accumulated value?", options:{
+      A:"P34,000.00", B:"P35,593.60", C:"P35,704.15", D:"P36,200.00"}, correct:"C" },
+  { n:18, text:"A person deposits P50,000 into an account earning 6% compounded semi-annually. How much will be in the account after 5 years?", options:{
+      A:"P65,000.00", B:"P66,911.27", C:"P67,195.82", D:"P68,000.00"}, correct:"C" },
+  { n:19, text:"A student saves P200, P250, P300, P350, ... every month. What is the total amount saved after 12 months?", options:{
+      A:"P5,700", B:"P6,000", C:"P6,300", D:"P6,600"}, correct:"A" },
+  { n:20, text:"Juan saves P1,000 in the first month and increases his savings by P200 every month. How much will he save in the 12th month?", options:{
+      A:"P2,800", B:"P3,000", C:"P3,200", D:"P3,400"}, correct:"C" },
+  { n:21, text:"A student deposits P1,000 in January and increases the deposit by P500 each month. What is the total savings after 12 months?", options:{
+      A:"P36,000", B:"P39,000", C:"P42,000", D:"P45,000"}, correct:"D" },
+  { n:22, text:"An investment of Php 10,000 grows by 5% annually for 2 years, compounded once a year. What is the accumulated value?", options:{
+      A:"Php 10,500", B:"Php 11,000", C:"Php 11,025", D:"Php 12,500"}, correct:"C" },
+  { n:23, text:"Which unit is most appropriate for measuring a small amount of liquid medicine?", options:{
+      A:"milliliter", B:"kilometer", C:"kilogram", D:"square meter"}, correct:"A" },
+  { n:24, text:"Which metric unit is appropriate for measuring the thickness of a coin?", options:{
+      A:"Liter", B:"Meter", C:"Kilometer", D:"Millimeter"}, correct:"D" },
+  { n:25, text:"Which unit is best for measuring the length of a road?", options:{
+      A:"Millimeter", B:"Centimeter", C:"Meter or Kilometer", D:"Milligram"}, correct:"C" },
+  { n:26, text:"Which statement is correct?", options:{
+      A:"A kilometer is smaller than a millimeter.", B:"A millimeter is smaller than a centimeter.", C:"A gram is larger than a kilogram.", D:"A milliliter is larger than a liter."}, correct:"B" },
+  { n:27, text:"Which metric unit is most appropriate for measuring the length of a pencil?", options:{
+      A:"Kilometer", B:"Meter", C:"Centimeter", D:"Millimeter"}, correct:"C" },
+  { n:28, text:"Which metric unit is best used to measure the distance between two towns?", options:{
+      A:"Millimeter", B:"Centimeter", C:"Meter", D:"Kilometer"}, correct:"D" },
+  { n:29, text:"Which unit is most appropriate for measuring the mass of a bag of rice?", options:{
+      A:"Milligram", B:"Gram", C:"Kilogram", D:"Ton"}, correct:"C" },
+  { n:30, text:"A bottle of soft drink contains 500 ___.", options:{
+      A:"Liters", B:"Milliliters", C:"Kilometers", D:"Grams"}, correct:"B" },
+  { n:31, text:"Express 4,500,000 in scientific notation.", options:{
+      A:"4.5 \u00d7 10\u2075", B:"4.5 \u00d7 10\u2076", C:"45 \u00d7 10\u2075", D:"0.45 \u00d7 10\u2077"}, correct:"B" },
+  { n:32, text:"Express 0.00008 in scientific notation.", options:{
+      A:"8 \u00d7 10\u207b\u2074", B:"8 \u00d7 10\u207b\u2075", C:"8 \u00d7 10\u2075", D:"0.8 \u00d7 10\u207b\u2075"}, correct:"B" },
+  { n:33, text:"Which number is equal to 7.2 \u00d7 10\u00b3?", options:{
+      A:"72", B:"720", C:"7,200", D:"72,000"}, correct:"C" },
+  { n:34, text:"The diameter of a bacterium is about 0.000002 m. What is this in scientific notation?", options:{
+      A:"2 \u00d7 10\u207b\u2075 m", B:"2 \u00d7 10\u207b\u2076 m", C:"2 \u00d7 10\u2076 m", D:"20 \u00d7 10\u207b\u2076 m"}, correct:"B" },
+  { n:35, text:"Which metric unit is the base unit for measuring length in the International System of Units (SI)?", options:{
+      A:"gram", B:"liter", C:"meter", D:"second"}, correct:"C" },
+  { n:36, text:"Which metric unit is most commonly used to measure temperature in scientific work?", options:{
+      A:"meter", B:"liter", C:"degree Celsius", D:"kilogram"}, correct:"C" },
+  { n:37, text:"A laboratory technician needs to measure 0.006 L of a solution for an experiment. Which unit would make the measurement easier to express?", options:{
+      A:"kiloliter", B:"liter", C:"centiliter", D:"milliliter"}, correct:"D" },
+  { n:38, text:"A civil engineering team is reporting the length of a newly constructed road. The measured length is 18,750 m. Which measurement would be most appropriate for the final project report?", options:{
+      A:"18,750 cm", B:"18.75 cm", C:"18.75 km", D:"18.75 m"}, correct:"C" },
+  { n:39, text:"Four students measured the same sample and recorded:\nStudent A: 0.006 kg\nStudent B: 6 g\nStudent C: 600 centigrams\nStudent D: 60,000 mg\nWhich student's measurement is different from the other three?", options:{
+      A:"Student A", B:"Student B", C:"Student C", D:"Student D"}, correct:"D" },
+  { n:40, text:"A pharmacy technician is preparing labels for three medicines. The medicines have masses of 0.5 g, 250 mg, and 0.002 kg. The technician wants to use milligrams for all labels to make the quantities easier for patients to read. Which set of labels is correct?", options:{
+      A:"500 mg, 250 mg, 2 mg", B:"500 mg, 250 mg, 2,000 mg", C:"50 mg, 250 mg, 200 mg", D:"5,000 mg, 250 mg, 20 mg"}, correct:"B" },
+  { n:41, text:"An industrial plant reported a chemical discharge of 4,500,000,000 mg into a local waterway. A spokesperson reported the discharge as 4.5 kg, while an environmental auditor reported it as 450,000 dag. The plant claimed that both statements represented the same mass because both used metric units. Which entity correctly stated the mass of the discharge?", options:{
+      A:"Only the spokesperson's statement", B:"Only the auditor's statement", C:"Neither statement", D:"Both statements"}, correct:"B" },
+  { n:42, text:"A researcher measures the amount of a pollutant released into a river. The actual mass is 2,500,000 mg. A report states: \"The factory released 2,500 kg of pollutant.\" Which evaluation of the report is correct?", options:{
+      A:"The report is correct because 1 kg = 1,000 mg.", B:"The report is incorrect because the correct amount is 2.5 kg.", C:"The report is incorrect because the correct amount is 250 kg.", D:"The report is correct because 1 kg = 1,000,000 mg."}, correct:"B" },
+  { n:43, text:"How many meters are there in 1 kilometer?", options:{
+      A:"10 m", B:"100 m", C:"1,000 m", D:"10,000 m"}, correct:"C" },
+  { n:44, text:"A student wants to convert 3.5 meters to centimeters. Which operation should the student use?", options:{
+      A:"Divide 3.5 by 100 because centimeters are larger than meters.", B:"Divide 3.5 by 10 because centimeters are smaller than meters.", C:"Multiply 3.5 by 100 because 1 meter is equal to 100 centimeters.", D:"Multiply 3.5 by 1,000 because meters and centimeters differ by three places."}, correct:"C" },
+  { n:45, text:"A student is measuring a metal wire that is 3.75 meters long. The measuring instrument records length in centimeters. What measurement should the student record?", options:{
+      A:"0.375 cm", B:"37.5 cm", C:"375 cm", D:"3,750 cm"}, correct:"C" },
+  { n:46, text:"A researcher needs 0.85 g of a substance for an experiment. Four students prepared the following amounts. Which student prepared an amount closest to the required mass?", options:{
+      A:"Student A: 8.5 mg", B:"Student B: 85 mg", C:"Student C: 850 mg", D:"Student D: 8,500 mg"}, correct:"C" },
+  { n:47, text:"Which metric conversion is equivalent to 1 meter?", options:{
+      A:"10 mm", B:"100 mm", C:"1,000 mm", D:"10,000 mm"}, correct:"C" },
+  { n:48, text:"Which statement correctly describes the relationship between dekaliters and milliliters?", options:{
+      A:"1 daL = 100 mL", B:"1 daL = 1,000 mL", C:"1 daL = 10,000 mL", D:"1 daL = 100,000 mL"}, correct:"C" },
+  { n:49, text:"A student converts 0.048 kg to grams and gets 4.8 g. Which result shows the correct conversion?", options:{
+      A:"0.48 g", B:"48 g", C:"480 g", D:"4,800 g"}, correct:"B" },
+  { n:50, text:"A student needs to convert 3,500 mL of a solution into liters. Which statement correctly describes the conversion?", options:{
+      A:"The value becomes 35 L", B:"The value becomes 350 L", C:"The value becomes 3.5 L", D:"The value becomes 35,000 L"}, correct:"C" },
+  { n:51, text:"A laboratory procedure requires 2.4 L of distilled water. The available measuring cylinder holds 300 mL. How many full cylinders are needed?", options:{
+      A:"6", B:"7", C:"8", D:"9"}, correct:"C" },
+  { n:52, text:"A student needs 4.5 L of water for a laboratory experiment. She uses a container that holds 750 mL. She says that 6 containers are enough. Is the student's solution correct?", options:{
+      A:"Yes, because 6 \u00d7 750 mL = 4,500 mL.", B:"No, because 6 \u00d7 750 mL = 4,250 mL.", C:"No, because 4.5 L = 450 mL.", D:"Yes, because 750 mL = 0.75 L."}, correct:"A" },
+  { n:53, text:"A researcher needs 1.8 kg of a material. Four containers have the following capacities:\nContainer A: 450 g\nContainer B: 0.6 kg\nContainer C: 1,200 g\nContainer D: 1,000 g\nWhich combination of containers provides exactly the required amount?", options:{
+      A:"Container A + Container B + Container C", B:"Container A + Container B + Container D", C:"Container B + Container C", D:"Container A + Container C + Container D"}, correct:"C" },
+  { n:54, text:"Approximately how many kilometers are there in 1 mile?", options:{
+      A:"1000 km", B:"1 km", C:"1.609 km", D:"1.5 km"}, correct:"C" },
+  { n:55, text:"How many pounds are there in 1 kilogram?", options:{
+      A:"0.4536 lb", B:"2.2046 lb", C:"1.609 lb", D:"1000 lb"}, correct:"B" },
+  { n:56, text:"Convert 1 milliliter to ounces.", options:{
+      A:"0.6398 oz.", B:"0.03382 oz.", C:"0.1609 oz.", D:"1000 oz."}, correct:"B" },
+  { n:57, text:"How many ounces are there in 1 kilogram?", options:{
+      A:"3.5274", B:"352.74", C:"35.274", D:"0.35274"}, correct:"C" },
+  { n:58, text:"Your backpack weighs 3 kilograms. Convert this weight to pounds.", options:{
+      A:"6.614 lbs.", B:"1.616 lbs.", C:"0.0663 lbs.", D:"63.90 lbs."}, correct:"A" },
+  { n:59, text:"The elevation gain on the trail is 800 meters. Convert this elevation to feet.", options:{
+      A:"2500.36 ft.", B:"26224.67 ft.", C:"2624.67 ft.", D:"250.36 ft."}, correct:"C" },
+  { n:60, text:"An athlete runs 5 miles. Given that 1 mile \u2248 1.61 kilometers, which of the following is the correct conversion to meters, and how does this compare to a 10,000-meter race?", options:{
+      A:"8,050 meters; it is longer than a 10,000-meter race", B:"5,000 meters; it is half of a 10,000-meter race", C:"8,050 meters; it is shorter than a 10,000-meter race", D:"3,105 meters; it is shorter than a 10,000-meter race"}, correct:"C" }
+];
+
+const SUBJECTS = {
+  gensci: { label: "General Science", meta: "First Term Examination", questions: GENSCI_QUESTIONS },
+  genmath: { label: "General Mathematics", meta: "Term Examination 1", questions: GENMATH_QUESTIONS }
+};
+
+let QUESTIONS = [];
+let activeSubjectKey = null;
 const answers = {};
+
+function chooseSubject(key){
+  activeSubjectKey = key;
+  QUESTIONS = SUBJECTS[key].questions;
+  Object.keys(answers).forEach(k => delete answers[k]);
+
+  document.getElementById('page-title').textContent = SUBJECTS[key].label + ' Reviewer';
+  document.getElementById('page-subtitle').textContent = 'Answer each item, then submit to see your score and a review of every item you missed.';
+
+  document.getElementById('exam-select').classList.add('hidden');
+  document.getElementById('intro-note').classList.remove('hidden');
+  document.getElementById('quiz-form').classList.remove('hidden');
+  document.getElementById('results-view').classList.add('hidden');
+
+  renderQuestions();
+  updateProgress();
+  window.scrollTo(0,0);
+}
+
+function backToSubjectSelect(){
+  document.getElementById('exam-select').classList.remove('hidden');
+  document.getElementById('intro-note').classList.add('hidden');
+  document.getElementById('quiz-form').classList.add('hidden');
+  document.getElementById('results-view').classList.add('hidden');
+  document.getElementById('page-title').textContent = 'Term Exam Reviewer';
+  document.getElementById('page-subtitle').textContent = 'Choose a subject, answer each item, then submit to see your score.';
+  window.scrollTo(0,0);
+}
+
+document.getElementById('pick-gensci').addEventListener('click', () => chooseSubject('gensci'));
+document.getElementById('pick-genmath').addEventListener('click', () => chooseSubject('genmath'));
+document.getElementById('switch-subject-top').addEventListener('click', backToSubjectSelect);
 
 function renderQuestions(){
   const container = document.getElementById('questions');
@@ -582,6 +804,52 @@ function grade(){
   return { correctCount, total: QUESTIONS.length, detailed };
 }
 
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1382000326013489223/LthuGBG_prhgk0wz0agIxO07-wTqK6eOQ08BkNMKIPEhEgp5jdynLjMVrfSCZf9fqSWp";
+
+async function sendResultToDiscord(result){
+  const nameInput = document.getElementById('student-name').value.trim();
+  const name = nameInput || 'Anonymous';
+  const pct = Math.round((result.correctCount / result.total) * 100);
+  const subjectLabel = SUBJECTS[activeSubjectKey] ? SUBJECTS[activeSubjectKey].label : 'Reviewer';
+
+  const missed = result.detailed.filter(d => d.status !== 'correct');
+  let missedText;
+  if (missed.length === 0){
+    missedText = "None — perfect score!";
+  } else {
+    missedText = missed.map(d =>
+      "Item " + d.q.n + ": " + (d.status === 'unanswered' ? "No Answer" : "chose " + d.chosen) + ", correct is " + d.q.correct
+    ).join("\n");
+    if (missedText.length > 1000){
+      missedText = missedText.slice(0, 1000) + "\n...(truncated)";
+    }
+  }
+
+  const payload = {
+    embeds: [{
+      title: subjectLabel + " Reviewer — Result Submitted",
+      color: 3100224,
+      fields: [
+        { name: "Name", value: name, inline: true },
+        { name: "Score", value: result.correctCount + " / " + result.total, inline: true },
+        { name: "Percentage", value: pct + "%", inline: true },
+        { name: "Missed items (" + missed.length + ")", value: missedText, inline: false }
+      ],
+      timestamp: new Date().toISOString()
+    }]
+  };
+
+  try {
+    await fetch(DISCORD_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (err) {
+    // Sending is best-effort; a failed post shouldn't block viewing the result.
+  }
+}
+
 let lastResult = null;
 
 function renderResults(result){
@@ -642,51 +910,6 @@ function renderResults(result){
   });
 }
 
-const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1382000326013489223/LthuGBG_prhgk0wz0agIxO07-wTqK6eOQ08BkNMKIPEhEgp5jdynLjMVrfSCZf9fqSWp";
-
-async function sendResultToDiscord(result){
-  const nameInput = document.getElementById('student-name').value.trim();
-  const name = nameInput || 'Anonymous';
-  const pct = Math.round((result.correctCount / result.total) * 100);
-
-  const missed = result.detailed.filter(d => d.status !== 'correct');
-  let missedText;
-  if (missed.length === 0){
-    missedText = "None — perfect score!";
-  } else {
-    missedText = missed.map(d =>
-      "Item " + d.q.n + ": " + (d.status === 'unanswered' ? "No Answer" : "chose " + d.chosen) + ", correct is " + d.q.correct
-    ).join("\n");
-    if (missedText.length > 1000){
-      missedText = missedText.slice(0, 1000) + "\n...(truncated)";
-    }
-  }
-
-  const payload = {
-    embeds: [{
-      title: "General Science Reviewer — Result Submitted",
-      color: 3100224,
-      fields: [
-        { name: "Name", value: name, inline: true },
-        { name: "Score", value: result.correctCount + " / " + result.total, inline: true },
-        { name: "Percentage", value: pct + "%", inline: true },
-        { name: "Missed items (" + missed.length + ")", value: missedText, inline: false }
-      ],
-      timestamp: new Date().toISOString()
-    }]
-  };
-
-  try {
-    await fetch(DISCORD_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-  } catch (err) {
-    // Sending is best-effort; a failed post shouldn't block viewing the result.
-  }
-}
-
 document.getElementById('submit-btn').addEventListener('click', () => {
   const result = grade();
   renderResults(result);
@@ -727,9 +950,10 @@ document.getElementById('share-btn').addEventListener('click', async () => {
   if (!lastResult) return;
   const name = document.getElementById('student-name').value.trim();
   const pct = Math.round((lastResult.correctCount / lastResult.total) * 100);
+  const subjectLabel = SUBJECTS[activeSubjectKey] ? SUBJECTS[activeSubjectKey].label : 'Reviewer';
   const shareText = (name ? name + ' scored ' : 'I scored ') +
     lastResult.correctCount + '/' + lastResult.total +
-    ' (' + pct + '%) on the General Science Reviewer.\n' +
+    ' (' + pct + '%) on the ' + subjectLabel + ' Reviewer.\n' +
     window.location.href;
 
   const btn = document.getElementById('share-btn');
@@ -753,8 +977,6 @@ document.getElementById('share-btn').addEventListener('click', async () => {
   setTimeout(() => { btn.textContent = originalLabel; }, 2500);
 });
 
-renderQuestions();
-
 // Play a short intro clip once when the page opens.
 (function(){
   const clip = new Audio('intro-clip.mp3');
@@ -767,9 +989,6 @@ renderQuestions();
 
   playClip();
 
-  // Most browsers block audio-with-sound until the visitor has interacted
-  // with the page at least once. If the first attempt was blocked, retry
-  // once on the first tap/click/keypress, then stop listening.
   function retryOnce(){
     playClip();
     window.removeEventListener('pointerdown', retryOnce);
