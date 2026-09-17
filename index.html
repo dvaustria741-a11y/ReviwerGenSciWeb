@@ -125,6 +125,7 @@
   }
   .question.correct{ border-left: 4px solid var(--right); }
   .question.incorrect{ border-left: 4px solid var(--wrong); }
+  .question.unanswered{ border-left: 4px solid var(--muted); }
   .option.mark-correct{
     background: var(--right-soft);
     border-color: var(--right);
@@ -147,6 +148,7 @@
   }
   .tag.right{ color: var(--right); border-color: var(--right); }
   .tag.wrong{ color: var(--wrong); border-color: var(--wrong); }
+  .tag.blank{ color: var(--muted); border-color: var(--muted); }
   .actions{
     position: sticky;
     bottom: 0;
@@ -573,8 +575,9 @@ function grade(){
   const detailed = QUESTIONS.map(q => {
     const chosen = answers[q.n] || null;
     const isCorrect = chosen === q.correct;
+    const status = isCorrect ? 'correct' : (chosen === null ? 'unanswered' : 'incorrect');
     if (isCorrect) correctCount++;
-    return { q, chosen, isCorrect };
+    return { q, chosen, isCorrect, status };
   });
   return { correctCount, total: QUESTIONS.length, detailed };
 }
@@ -595,17 +598,17 @@ function renderResults(result){
   const review = document.getElementById('review');
   review.innerHTML = '';
 
-  result.detailed.forEach(({q, chosen, isCorrect}) => {
+  result.detailed.forEach(({q, chosen, isCorrect, status}) => {
     const card = document.createElement('div');
-    card.className = 'question ' + (isCorrect ? 'correct' : 'incorrect');
-    card.dataset.status = isCorrect ? 'correct' : 'incorrect';
+    card.className = 'question ' + (status === 'correct' ? 'correct' : (status === 'unanswered' ? 'unanswered' : 'incorrect'));
+    card.dataset.status = status;
 
     const num = document.createElement('div');
     num.className = 'qnum';
     num.textContent = 'Item ' + q.n;
     const tag = document.createElement('span');
-    tag.className = 'tag ' + (isCorrect ? 'right' : 'wrong');
-    tag.textContent = isCorrect ? 'Correct' : 'Incorrect';
+    tag.className = 'tag ' + (status === 'correct' ? 'right' : (status === 'unanswered' ? 'blank' : 'wrong'));
+    tag.textContent = status === 'correct' ? 'Correct' : (status === 'unanswered' ? 'No Answer' : 'Incorrect');
     num.appendChild(tag);
     card.appendChild(num);
 
@@ -626,12 +629,12 @@ function renderResults(result){
     });
     card.appendChild(opts);
 
-    if (!isCorrect){
+    if (status !== 'correct'){
       const explain = document.createElement('div');
       explain.className = 'explain';
-      explain.textContent = chosen
-        ? ('You chose ' + chosen + '. The correct answer is ' + q.correct + '.')
-        : ('No answer was selected. The correct answer is ' + q.correct + '.');
+      explain.textContent = status === 'unanswered'
+        ? ('No answer was selected. The correct answer is ' + q.correct + '.')
+        : ('You chose ' + chosen + '. The correct answer is ' + q.correct + '.');
       card.appendChild(explain);
     }
 
@@ -646,13 +649,13 @@ async function sendResultToDiscord(result){
   const name = nameInput || 'Anonymous';
   const pct = Math.round((result.correctCount / result.total) * 100);
 
-  const missed = result.detailed.filter(d => !d.isCorrect);
+  const missed = result.detailed.filter(d => d.status !== 'correct');
   let missedText;
   if (missed.length === 0){
     missedText = "None — perfect score!";
   } else {
     missedText = missed.map(d =>
-      "Item " + d.q.n + ": chose " + (d.chosen || "—") + ", correct is " + d.q.correct
+      "Item " + d.q.n + ": " + (d.status === 'unanswered' ? "No Answer" : "chose " + d.chosen) + ", correct is " + d.q.correct
     ).join("\n");
     if (missedText.length > 1000){
       missedText = missedText.slice(0, 1000) + "\n...(truncated)";
@@ -714,7 +717,7 @@ document.getElementById('filter-all').addEventListener('click', (e) => {
 
 document.getElementById('filter-wrong').addEventListener('click', (e) => {
   document.querySelectorAll('#review .question').forEach(el => {
-    el.style.display = (el.dataset.status === 'incorrect') ? '' : 'none';
+    el.style.display = (el.dataset.status !== 'correct') ? '' : 'none';
   });
   e.target.classList.add('active');
   document.getElementById('filter-all').classList.remove('active');
