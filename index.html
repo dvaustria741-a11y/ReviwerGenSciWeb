@@ -100,9 +100,14 @@
     white-space: pre-line;
   }
   .options{
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 24px;
+  }
+  @media (max-width: 640px){
+    .options{
+      grid-template-columns: 1fr;
+    }
   }
   .option{
     display:flex;
